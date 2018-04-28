@@ -18,6 +18,7 @@ type TvSeason struct {
 	TvEpisodes 		[]TvEpisode		`json:"episodes,omitempty"`
 }
 
+// TODO: add a TvShow ID for convenience
 type TvEpisode struct {
 	helpers.Model
 	EpisodeTitle 	string			`json:"episode_title"`

@@ -100,16 +100,18 @@ func initRouter() *mux.Router {
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	// Index routes for TV shows
+	// Index routes for TV
 	router.Handle("/api/v1/tv", tv.HandleFullIndex(db, httpLogger))
 	router.Handle("/api/v1/tv/shows", tv.HandleShowsIndex(db, httpLogger))
 	router.Handle("/api/v1/tv/seasons", tv.HandleSeasonsIndex(db, httpLogger))
 	router.Handle("/api/v1/tv/episodes", tv.HandleEpisodesIndex(db, httpLogger))
 
-	// TODO
-	// /api/v1/tv/shows/{id}/seasons/{id}/episodes/{id}
-	// /api/v1/tv/seasons/{id}
-	// /api/v1/tv/episodes/{id}
+	// Item routes for TV
+	router.Handle("/api/v1/tv/shows/{id}", tv.HandleShow(db, httpLogger))
+	router.Handle("/api/v1/tv/seasons/{id}", tv.HandleSeason(db, httpLogger))
+	router.Handle("/api/v1/tv/episodes/{id}", tv.HandleEpisode(db, httpLogger))
+
+	// TODO implement /api/v1/tv/shows/{id}/seasons/{id}/episodes/{id} format
 
 	return router
 
