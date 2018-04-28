@@ -111,11 +111,11 @@ func initRouter() *mux.Router {
 	router.Handle("/api/v1/tv/seasons/{id}", tv.HandleSeason(db, httpLogger))
 	router.Handle("/api/v1/tv/episodes/{id}", tv.HandleEpisode(db, httpLogger))
 
-	// TODO implement /api/v1/tv/shows/{id}/seasons/{id}/episodes/{id} format
-	//router.Handle("/api/v1/tv/shows/{id}/seasons", tv.HandleShowSeasonsIndex(db, httpLogger))
-	//router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}", tv.HandleShowSeasons(db, httpLogger))
-	//router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}/episodes", tv.HandleShowSeasonsEpisodesIndex(db, httpLogger))
-	//router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}/episodes/{eid}", tv.HandleShowSeasonsEpisodes(db, httpLogger))
+	// TODO: These routes have a lot of repetition in the handlers, try to shorten up
+	router.Handle("/api/v1/tv/shows/{id}/seasons", tv.HandleShowSeasonsIndex(db, httpLogger))
+	router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}", tv.HandleShowSeasons(db, httpLogger))
+	router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}/episodes", tv.HandleShowSeasonsEpisodesIndex(db, httpLogger))
+	router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}/episodes/{eid}", tv.HandleShowSeasonsEpisodes(db, httpLogger))
 
 	return router
 

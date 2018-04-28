@@ -179,6 +179,147 @@ func HandleEpisode(db *gorm.DB, logger *log.Logger) http.Handler {
 	})
 }
 
+// Served from /api/v1/tv/shows/{id}/seasons
+func HandleShowSeasonsIndex(db *gorm.DB, logger *log.Logger) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+
+		encoder := json.NewEncoder(w)
+
+		// Get ID from URL
+		id, err := strconv.Atoi(mux.Vars(r)["id"])
+		if err != nil {
+			clientError(err, logger, w, encoder)
+			return
+		}
+
+		var seasons []Season
+
+		err = db.Where("show_id = ?", id).Find(&seasons).Error
+		if err != nil {
+			serverError(err, logger, w, encoder)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		encoder.Encode(seasons)
+
+	})
+}
+
+// Served from /api/v1/tv/shows/{id}/seasons/{sid}
+func HandleShowSeasons(db *gorm.DB, logger *log.Logger) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+
+		encoder := json.NewEncoder(w)
+
+		// Get ID from URL
+		id, err := strconv.Atoi(mux.Vars(r)["id"])
+		if err != nil {
+			clientError(err, logger, w, encoder)
+			return
+		}
+
+		// Get season ID from URL
+		sid, err := strconv.Atoi(mux.Vars(r)["sid"])
+		if err != nil {
+			clientError(err, logger, w,encoder)
+			return
+		}
+
+		var season Season
+
+		err = db.Where("show_id = ? AND id = ?", id, sid).First(&season).Error
+		if err != nil && err.Error() == "record not found" {
+			notFoundError(err, logger, w, encoder)
+			return
+		} else if err != nil {
+			serverError(err, logger, w, encoder)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		encoder.Encode(season)
+
+	})
+}
+
+// Served from /api/v1/tv/shows/{id}/seasons/{sid}/episodes
+func HandleShowSeasonsEpisodesIndex(db *gorm.DB, logger *log.Logger) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+
+		encoder := json.NewEncoder(w)
+
+		// Get ID from URL
+		id, err := strconv.Atoi(mux.Vars(r)["id"])
+		if err != nil {
+			clientError(err, logger, w, encoder)
+			return
+		}
+
+		// Get season ID from URL
+		sid, err := strconv.Atoi(mux.Vars(r)["sid"])
+		if err != nil {
+			clientError(err, logger, w,encoder)
+			return
+		}
+
+		var episodes []Episode
+
+		err = db.Where("show_id = ? AND season_id = ?", id, sid).Find(&episodes).Error
+		if err != nil {
+			serverError(err, logger, w, encoder)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		encoder.Encode(episodes)
+
+	})
+}
+
+// Served from /api/v1/tv/shows/{id}/seasons/{sid}/episodes/{eid}
+func HandleShowSeasonsEpisodes(db *gorm.DB, logger *log.Logger) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+
+		encoder := json.NewEncoder(w)
+
+		// Get ID from URL
+		id, err := strconv.Atoi(mux.Vars(r)["id"])
+		if err != nil {
+			clientError(err, logger, w, encoder)
+			return
+		}
+
+		// Get season ID from URL
+		sid, err := strconv.Atoi(mux.Vars(r)["sid"])
+		if err != nil {
+			clientError(err, logger, w,encoder)
+			return
+		}
+
+		eid, err := strconv.Atoi(mux.Vars(r)["eid"])
+		if err != nil {
+			clientError(err, logger, w, encoder)
+			return
+		}
+
+		var episode Episode
+
+		err = db.Where("show_id = ? AND season_id = ? AND id = ?", id, sid, eid).First(&episode).Error
+		if err != nil && err.Error() == "record not found" {
+			notFoundError(err, logger, w, encoder)
+			return
+		} else if err != nil {
+			serverError(err, logger, w, encoder)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		encoder.Encode(episode)
+
+	})
+}
+
 // Log and return an internal server error (code 500)
 func serverError(err error, logger *log.Logger, w http.ResponseWriter, encoder *json.Encoder) {
 	logger.Print(err)
