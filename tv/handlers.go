@@ -14,7 +14,7 @@ func HandleFullIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		encoder := json.NewEncoder(w)
-		var shows []TvShow
+		var shows []Show
 
 		err := db.Preload("TvSeasons").
 			Preload("TvSeasons.TvEpisodes").
@@ -37,7 +37,7 @@ func HandleShowsIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		encoder := json.NewEncoder(w)
-		var shows []TvShow
+		var shows []Show
 
 		err := db.Find(&shows).Error
 		if err != nil {
@@ -51,11 +51,12 @@ func HandleShowsIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 	})
 }
 
+// Served from /api/v1/tv/seasons
 func HandleSeasonsIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
 
 		encoder := json.NewEncoder(w)
-		var seasons []TvSeason
+		var seasons []Season
 
 		err := db.Find(&seasons).Error
 		if err != nil {
@@ -69,11 +70,12 @@ func HandleSeasonsIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 	})
 }
 
+// Served from /api/v1/tv/episodes
 func HandleEpisodesIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
 
 		encoder := json.NewEncoder(w)
-		var episodes []TvEpisode
+		var episodes []Episode
 
 		err := db.Find(&episodes).Error
 		if err != nil {
@@ -87,6 +89,7 @@ func HandleEpisodesIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 	})
 }
 
+// Served from /api/v1/tv/shows/{id}
 func HandleShow(db *gorm.DB, logger *log.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
 
@@ -99,7 +102,7 @@ func HandleShow(db *gorm.DB, logger *log.Logger) http.Handler {
 			return
 		}
 
-		var show TvShow
+		var show Show
 
 		err = db.Find(&show, id).Error
 		if err != nil && err.Error() == "record not found" {
@@ -116,6 +119,7 @@ func HandleShow(db *gorm.DB, logger *log.Logger) http.Handler {
 	})
 }
 
+// Served from /api/v1/tv/seasons/{id}
 func HandleSeason(db *gorm.DB, logger *log.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
 
@@ -128,7 +132,7 @@ func HandleSeason(db *gorm.DB, logger *log.Logger) http.Handler {
 			return
 		}
 
-		var season TvSeason
+		var season Season
 
 		err = db.Find(&season, id).Error
 		if err != nil && err.Error() == "record not found" {
@@ -145,6 +149,7 @@ func HandleSeason(db *gorm.DB, logger *log.Logger) http.Handler {
 	})
 }
 
+// Served from /api/v1/tv/episodes/{id}
 func HandleEpisode(db *gorm.DB, logger *log.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
 
@@ -157,7 +162,7 @@ func HandleEpisode(db *gorm.DB, logger *log.Logger) http.Handler {
 			return
 		}
 
-		var episode TvEpisode
+		var episode Episode
 
 		err = db.Find(&episode, id).Error
 		if err != nil && err.Error() == "record not found" {
@@ -194,6 +199,3 @@ func notFoundError(err error, logger *log.Logger, w http.ResponseWriter, encoder
 	w.WriteHeader(http.StatusNotFound)
 	encoder.Encode("404: specified id does not exist")
 }
-
-
-

@@ -112,6 +112,10 @@ func initRouter() *mux.Router {
 	router.Handle("/api/v1/tv/episodes/{id}", tv.HandleEpisode(db, httpLogger))
 
 	// TODO implement /api/v1/tv/shows/{id}/seasons/{id}/episodes/{id} format
+	//router.Handle("/api/v1/tv/shows/{id}/seasons", tv.HandleShowSeasonsIndex(db, httpLogger))
+	//router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}", tv.HandleShowSeasons(db, httpLogger))
+	//router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}/episodes", tv.HandleShowSeasonsEpisodesIndex(db, httpLogger))
+	//router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}/episodes/{eid}", tv.HandleShowSeasonsEpisodes(db, httpLogger))
 
 	return router
 
