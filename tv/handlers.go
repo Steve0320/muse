@@ -16,8 +16,8 @@ func HandleFullIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 		encoder := json.NewEncoder(w)
 		var shows []Show
 
-		err := db.Preload("TvSeasons").
-			Preload("TvSeasons.TvEpisodes").
+		err := db.Preload("Seasons").
+			Preload("Seasons.Episodes").
 			Find(&shows).
 			Error
 

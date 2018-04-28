@@ -7,22 +7,23 @@ import (
 
 type Show struct {
 	helpers.Model
-	ShowTitle 		string   `json:"show_title"`
-	TvSeasons 		[]Season `json:"seasons,omitempty"`
+	ShowTitle 		string   		`json:"show_title"`
+	Seasons 		[]Season 		`json:"seasons,omitempty"`
+	Episodes		[]Episode		`json:"episodes,omitempty"`
 }
 
 type Season struct {
 	helpers.Model
-	SeasonNumber 	int         `json:"season_number"`
-	ShowID 			uint        `json:"show_id"`
-	Episodes 		[]Episode 	`json:"episodes,omitempty"`
+	SeasonNumber 	int         	`json:"season_number"`
+	ShowID 			uint        	`json:"show_id"`
+	Episodes 		[]Episode 		`json:"episodes,omitempty"`
 }
 
-// TODO: add a Show ID for convenience
 type Episode struct {
 	helpers.Model
 	EpisodeTitle 	string			`json:"episode_title"`
-	TvSeasonID 		uint			`json:"season_id"`
+	SeasonID 		uint			`json:"season_id"`
+	ShowID			uint			`json:"show_id"`
 }
 
 func InitTables(db *gorm.DB) error {
