@@ -14,7 +14,7 @@ import (
 )
 
 // Define flags
-var logPath = flag.String("logFile", "/dev/stdout", "location of logfile")
+var logPath = flag.String("logFile", "stdout", "location of logfile")
 var bindAddr = flag.String("bindAddr", "127.0.0.1", "address to serve web interface on")
 var port = flag.Int("port", 3000, "port to run web interface on")
 
@@ -30,10 +30,18 @@ func main() {
 
 	flag.Parse()
 
+	// Declare often-used variables
+	var logFile *os.File
+	var err error
+
 	// Open logging file
-	logFile, err := os.OpenFile(*logPath, os.O_APPEND | os.O_CREATE | os.O_WRONLY, 0644)
-	if err != nil {
-		log.Fatalf("Log file %s could not be opened\n", *logPath)
+	if *logPath == "stdout"{
+		logFile = os.Stdout
+	} else {
+		logFile, err = os.OpenFile(*logPath, os.O_APPEND | os.O_CREATE | os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatalf("Log file %s could not be opened\n", *logPath)
+		}
 	}
 
 	// Initialize loggers
