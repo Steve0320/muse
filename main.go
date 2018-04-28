@@ -54,20 +54,9 @@ func main() {
 	test(err, setupLogger)
 	db.LogMode(true)
 
-	// Initialize tables
+	// Perform initializations
 	initTables()
-
-	// Set up API routes
-	router := mux.NewRouter().StrictSlash(true)
-
-	// Routes for TV shows
-	router.Handle("/api/v1/tv", tv.HandleIndex(db, httpLogger))
-	router.Handle("/api/v1/tv/shows", tv.HandleShowsIndex(db, httpLogger))
-
-	// TODO
-	// /api/v1/tv/shows/{id}/seasons/{id}/episodes/{id}
-	// /api/v1/tv/seasons/{id}
-	// /api/v1/tv/episodes/{id}
+	router := initRouter()
 
 	// Define and start server
 	server := &http.Server {
@@ -104,4 +93,24 @@ func initTables() {
 	if err := tv.InitTables(db); err != nil {
 		fatalLogger.Fatal(err)
 	}
+}
+
+// Convenience method for initializing API routes
+func initRouter() *mux.Router {
+
+	router := mux.NewRouter().StrictSlash(true)
+
+	// Index routes for TV shows
+	router.Handle("/api/v1/tv", tv.HandleFullIndex(db, httpLogger))
+	router.Handle("/api/v1/tv/shows", tv.HandleShowsIndex(db, httpLogger))
+	router.Handle("/api/v1/tv/seasons", tv.HandleSeasonsIndex(db, httpLogger))
+	router.Handle("/api/v1/tv/episodes", tv.HandleEpisodesIndex(db, httpLogger))
+
+	// TODO
+	// /api/v1/tv/shows/{id}/seasons/{id}/episodes/{id}
+	// /api/v1/tv/seasons/{id}
+	// /api/v1/tv/episodes/{id}
+
+	return router
+
 }

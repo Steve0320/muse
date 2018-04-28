@@ -8,7 +8,7 @@ import (
 )
 
 // Served from /api/v1/tv
-func HandleIndex(db *gorm.DB, logger *log.Logger) http.Handler {
+func HandleFullIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		encoder := json.NewEncoder(w)
@@ -20,9 +20,7 @@ func HandleIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 			Error
 
 		if err != nil {
-			logger.Print(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			encoder.Encode("500: internal server error")
+			serverError(err, logger, w, encoder)
 			return
 		}
 
@@ -41,9 +39,7 @@ func HandleShowsIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 
 		err := db.Find(&shows).Error
 		if err != nil {
-			logger.Print(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			encoder.Encode("500: internal server error")
+			serverError(err, logger, w, encoder)
 			return
 		}
 
@@ -51,4 +47,47 @@ func HandleShowsIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 		encoder.Encode(shows)
 
 	})
+}
+
+func HandleSeasonsIndex(db *gorm.DB, logger *log.Logger) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+
+		encoder := json.NewEncoder(w)
+		var seasons []TvSeason
+
+		err := db.Find(&seasons).Error
+		if err != nil {
+			serverError(err, logger, w, encoder)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		encoder.Encode(seasons)
+
+	})
+}
+
+func HandleEpisodesIndex(db *gorm.DB, logger *log.Logger) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+
+		encoder := json.NewEncoder(w)
+		var seasons []TvEpisode
+
+		err := db.Find(&seasons).Error
+		if err != nil {
+			serverError(err, logger, w, encoder)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		encoder.Encode(seasons)
+
+	})
+}
+
+// Log and return an internal server error (code 500)
+func serverError(err error, logger *log.Logger, w http.ResponseWriter, encoder *json.Encoder) {
+	logger.Print(err)
+	w.WriteHeader(http.StatusInternalServerError)
+	encoder.Encode("500: internal server error")
 }

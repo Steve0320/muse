@@ -8,14 +8,14 @@ import (
 type TvShow struct {
 	helpers.Model
 	ShowTitle 		string 		`json:"show_title"`
-	TvSeasons 		[]TvSeason 	`json:"tv_seasons,omitempty"`
+	TvSeasons 		[]TvSeason 	`json:"seasons,omitempty"`
 }
 
 type TvSeason struct {
 	helpers.Model
 	SeasonNumber 	int				`json:"season_number"`
 	TvShowID 		uint			`json:"tv_show_id"`
-	TvEpisodes 		[]TvEpisode		`json:"tv_episodes,omitempty"`
+	TvEpisodes 		[]TvEpisode		`json:"episodes,omitempty"`
 }
 
 type TvEpisode struct {
