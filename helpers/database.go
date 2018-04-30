@@ -14,14 +14,12 @@ type Model struct {
 }
 
 // Create tables if they don't already exist
-func SafeCreateTable(db *gorm.DB, types ...interface{}) error {
+func MassCreateTable(db *gorm.DB, types ...interface{}) error {
 
 	for _, t := range types {
-		if !db.HasTable(t) {
-			err := db.CreateTable(t).Error
-			if err != nil {
-				return err
-			}
+		err := db.AutoMigrate(t).Error
+		if err != nil {
+			return err
 		}
 	}
 
