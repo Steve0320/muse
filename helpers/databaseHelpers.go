@@ -7,7 +7,7 @@ import (
 
 // More flexible version of gorm.Model
 type Model struct {
-	ID uint 				`gorm:"primary_key" json:"id"`
+	ID uint 				`gorm:"primary_key" json:"-"`
 	CreatedAt 	time.Time 	`json:"created_at"`
 	UpdatedAt 	time.Time 	`json:"updated_at"`
 	DeletedAt 	*time.Time 	`json:"-"`

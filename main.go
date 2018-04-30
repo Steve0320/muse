@@ -7,10 +7,8 @@ import (
 	"os"
 	"log"
 	"net/http"
-	"github.com/gorilla/mux"
-	"fmt"
-	"time"
 	"muse2/tv"
+	"github.com/manyminds/api2go"
 )
 
 // Define flags
@@ -55,19 +53,24 @@ func main() {
 	db.LogMode(true)
 
 	// Perform initializations
-	initTables()
-	router := initRouter()
+	//initTables()
+	//router := initRouter()
 
 	// Define and start server
-	server := &http.Server {
-		Handler: loggingHandler(httpLogger, router),
-		Addr: fmt.Sprintf("%s:%d", *bindAddr, *port),
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout: 15 * time.Second,
-	}
+	//server := &http.Server {
+	//	Handler: loggingHandler(httpLogger, router),
+	//	Addr: fmt.Sprintf("%s:%d", *bindAddr, *port),
+	//	WriteTimeout: 15 * time.Second,
+	//	ReadTimeout: 15 * time.Second,
+	//}
 
-	httpLogger.Printf("Starting API server on %s\n", server.Addr)
-	httpLogger.Fatal(server.ListenAndServe())
+	//httpLogger.Printf("Starting API server on %s\n", server.Addr)
+	//httpLogger.Fatal(server.ListenAndServe())
+
+	show := tv.NewShowSource(db)
+	api := api2go.NewAPI("v1")
+	api.AddResource(tv.Show{}, &show)
+	http.ListenAndServe(":8080", api.Handler())
 
 }
 
@@ -94,29 +97,42 @@ func initTables() {
 		fatalLogger.Fatal(err)
 	}
 }
-
+/*
 // Convenience method for initializing API routes
 func initRouter() *mux.Router {
 
-	router := mux.NewRouter().StrictSlash(true)
+	//show = tv.NewShowSource()
+	//api := api2go.NewAPI("v1")
+	//api.AddResource(tv.Show{}, &tv.ShowSource{})
+	//http.ListenAndServe(":8080", api.Handler())
+
+	//router := mux.NewRouter().StrictSlash(true)
+	//api := api2go.NewAPI("v1")
 
 	// Index routes for TV
-	router.Handle("/api/v1/tv", tv.HandleFullIndex(db, httpLogger))
-	router.Handle("/api/v1/tv/shows", tv.HandleShowsIndex(db, httpLogger))
-	router.Handle("/api/v1/tv/seasons", tv.HandleSeasonsIndex(db, httpLogger))
-	router.Handle("/api/v1/tv/episodes", tv.HandleEpisodesIndex(db, httpLogger))
+	//router.Handle("/api/v1/tv", tv.HandleFullIndex(db, httpLogger))
+	//router.Handle("/api/v1/tv/shows", tv.HandleShowsIndex(db, httpLogger))
+	//router.Handle("/api/v1/tv/seasons", tv.HandleSeasonsIndex(db, httpLogger))
+	//router.Handle("/api/v1/tv/episodes", tv.HandleEpisodesIndex(db, httpLogger))
 
 	// Item routes for TV
-	router.Handle("/api/v1/tv/shows/{id}", tv.HandleShow(db, httpLogger))
-	router.Handle("/api/v1/tv/seasons/{id}", tv.HandleSeason(db, httpLogger))
-	router.Handle("/api/v1/tv/episodes/{id}", tv.HandleEpisode(db, httpLogger))
+	//router.Handle("/api/v1/tv/shows/{id}", tv.HandleShow(db, httpLogger))
+	//router.Handle("/api/v1/tv/seasons/{id}", tv.HandleSeason(db, httpLogger))
+	//router.Handle("/api/v1/tv/episodes/{id}", tv.HandleEpisode(db, httpLogger))
 
 	// TODO: These routes have a lot of repetition in the handlers, try to shorten up
-	router.Handle("/api/v1/tv/shows/{id}/seasons", tv.HandleShowSeasonsIndex(db, httpLogger))
-	router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}", tv.HandleShowSeasons(db, httpLogger))
-	router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}/episodes", tv.HandleShowSeasonsEpisodesIndex(db, httpLogger))
-	router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}/episodes/{eid}", tv.HandleShowSeasonsEpisodes(db, httpLogger))
+	// TODO: Implement CRUD operations (only READ so far)
+	// Routes for nested resources
+	//router.Handle("/api/v1/tv/shows/{id}/seasons", tv.HandleShowSeasonsIndex(db, httpLogger))
+	//router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}", tv.HandleShowSeasons(db, httpLogger))
+	//router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}/episodes", tv.HandleShowSeasonsEpisodesIndex(db, httpLogger))
+	//router.Handle("/api/v1/tv/shows/{id}/seasons/{sid}/episodes/{eid}", tv.HandleShowSeasonsEpisodes(db, httpLogger))
 
-	return router
+	// Search route for TV
+	//router.Handle("/api/v1/tv/search", tv.HandleSearch(db, httpLogger))
 
-}
+	// TODO: /api/v1/tv/shows/search?q=...
+
+	//return router
+
+}*/

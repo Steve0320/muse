@@ -1,16 +1,7 @@
 package tv
 
-import (
-	"net/http"
-	"github.com/jinzhu/gorm"
-	"log"
-	"encoding/json"
-	"strconv"
-	"github.com/gorilla/mux"
-)
-
 // Served from /api/v1/tv
-func HandleFullIndex(db *gorm.DB, logger *log.Logger) http.Handler {
+/*func HandleFullIndex(db *gorm.DB, logger *log.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		encoder := json.NewEncoder(w)
@@ -320,6 +311,40 @@ func HandleShowSeasonsEpisodes(db *gorm.DB, logger *log.Logger) http.Handler {
 	})
 }
 
+// Served from /api/v1/tv/search
+// Requires param q or tvdb
+func HandleSearch(db *gorm.DB, logger *log.Logger) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+
+		encoder := json.NewEncoder(w)
+		q := r.URL.Query().Get("q")
+		tvid := r.URL.Query().Get("tvdb")
+
+		// q or tvid can be present, but not both
+		if !((q == "") != (tvid == "")) {
+			logger.Print("both q and tvid present")
+			w.WriteHeader(http.StatusBadRequest)
+			encoder.Encode("400: must set either q or tvid, not both")
+			return
+		}
+
+		// Perform search
+		if q != "" {
+
+		} else if tvid != "" {
+
+		} else {
+			// Should never reach here, means that param check is broken
+			serverError(errors.New("param check failed"), logger, w, encoder)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		encoder.Encode("test")
+
+	})
+}
+
 // Log and return an internal server error (code 500)
 func serverError(err error, logger *log.Logger, w http.ResponseWriter, encoder *json.Encoder) {
 	logger.Print(err)
@@ -340,3 +365,4 @@ func notFoundError(err error, logger *log.Logger, w http.ResponseWriter, encoder
 	w.WriteHeader(http.StatusNotFound)
 	encoder.Encode("404: specified id does not exist")
 }
+*/
