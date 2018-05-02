@@ -51,9 +51,8 @@ func main() {
 	dbLogger = log.New(logFile, "DATABASE: ", log.Ldate | log.Ltime)
 
 	// Perform initializations
-	db := initDB()
-	initTables(db)
-	server := initServer(db)
+	initDB()
+	server := initServer()
 
 	httpLogger.Printf("Starting API server on %s\n", server.Addr)
 	httpLogger.Fatal(server.ListenAndServe())
@@ -62,29 +61,27 @@ func main() {
 
 //*********************** Convenience Initializers ***********************//
 
-func initDB() *gorm.DB {
+func initDB() {
+
 	db, err := gorm.Open("sqlite3", *dbPath)
 	helpers.CheckError(err, fatalLogger)
 	db.SetLogger(dbLogger)
 	db.LogMode(true)
 	setupLogger.Print("Completed database initialization")
-	return db
-}
 
-func initTables(db *gorm.DB) {
-	helpers.CheckError(tv.InitTables(db), fatalLogger)
+	helpers.CheckError(tv.InitDB(db), fatalLogger)
 	setupLogger.Print("Completed table initialization")
 
 }
 
-func initServer(db *gorm.DB) *http.Server {
+func initServer() *http.Server {
 
 	// Setup API
 	api := api2go.NewAPI("api/v1")
 
-	api.AddResource(tv.Show{}, tv.NewShow(db))
-	api.AddResource(tv.Season{}, tv.NewSeason(db))
-	api.AddResource(tv.Episode{}, tv.NewEpisode(db))
+	api.AddResource(tv.Show{}, &tv.Show{})
+	api.AddResource(tv.Season{}, &tv.Season{})
+	api.AddResource(tv.Episode{}, &tv.Episode{})
 
 	// Setup HTTP server
 	server := &http.Server {

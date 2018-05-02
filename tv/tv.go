@@ -5,6 +5,10 @@ import (
 	"muse2/helpers"
 )
 
-func InitTables(db *gorm.DB) error {
-	return helpers.MassCreateTable(db, &Show{}, &Season{}, &Episode{})
+var db *gorm.DB
+
+// Set the global database and create tables
+func InitDB(database *gorm.DB) error {
+	db = database
+	return helpers.MassCreateTable(database, &Show{}, &Season{}, &Episode{})
 }
