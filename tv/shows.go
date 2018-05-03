@@ -11,7 +11,7 @@ import (
 
 type Show struct {
 	helpers.Model
-	ShowTitle		string		`json:"show_title"`
+	ShowTitle		string		`json:"show-title"`
 	Seasons			[]Season	`json:"-"`
 	Episodes		[]Episode	`json:"-"`
 }

@@ -8,7 +8,7 @@ import (
 
 type Season struct {
 	helpers.Model
-	SeasonNumber 	int         	`json:"season_number"`
+	SeasonNumber 	int         	`json:"season-number"`
 	ShowID 			uint        	`json:"-"`
 	Episodes 		[]Episode 		`json:"-"`
 }
