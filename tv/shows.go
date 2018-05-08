@@ -7,11 +7,16 @@ import (
 	"net/http"
 	"strconv"
 	"errors"
+	"github.com/manyminds/api2go/jsonapi"
+	"log"
 )
 
 type Show struct {
 	helpers.Model
-	ShowTitle		string		`json:"show-title"`
+	Title			string		`json:"title"`
+	TvID			string		`json:"tvid"`
+	Description		string		`json:"description"`
+	CoverURL		string		`json:"cover-url"`
 	Seasons			[]Season	`json:"-"`
 	Episodes		[]Episode	`json:"-"`
 }
@@ -112,17 +117,16 @@ func (s Show) Delete(id string, r api2go.Request) (api2go.Responder, error) {
 
 }
 
-/*
 func (s Show) GetReferences() []jsonapi.Reference {
 	return []jsonapi.Reference {
 		{
 			Type: "seasons",
 			Name: "seasons",
 		},
-		{
-			Type: "episodes",
-			Name: "episodes",
-		},
+		//{
+		//	Type: "episodes",
+		//	Name: "episodes",
+		//},
 	}
 }
 
@@ -130,7 +134,7 @@ func (s Show) GetReferencedIDs() []jsonapi.ReferenceID {
 
 	var result []jsonapi.ReferenceID
 	var seasonIDs []string
-	var episodeIDs []string
+	//var episodeIDs []string
 	var err error
 
 	// Fetch associated season IDs
@@ -141,11 +145,11 @@ func (s Show) GetReferencedIDs() []jsonapi.ReferenceID {
 	}
 
 	// Fetch associated episode IDs
-	err = db.Model(&Episode{}).Where("show_id = ?", s.ID).Pluck("id", &episodeIDs).Error
-	if err != nil {
-		log.Print("ERROR: get referenced episode IDs for Show failed")
-		return result
-	}
+	//err = db.Model(&Episode{}).Where("show_id = ?", s.ID).Pluck("id", &episodeIDs).Error
+	//if err != nil {
+	//	log.Print("ERROR: get referenced episode IDs for Show failed")
+	//	return result
+	//}
 
 	// Add season IDs
 	for _, id := range seasonIDs {
@@ -157,41 +161,42 @@ func (s Show) GetReferencedIDs() []jsonapi.ReferenceID {
 	}
 
 	// Add episode IDs
-	for _, id := range episodeIDs {
-		result = append(result, jsonapi.ReferenceID{
-			ID: id,
-			Type: "episodes",
-			Name: "episodes",
-		})
-	}
+	//for _, id := range episodeIDs {
+	//	result = append(result, jsonapi.ReferenceID{
+	//		ID: id,
+	//		Type: "episodes",
+	//		Name: "episodes",
+	//	})
+	//}
 
 	return result
 
 }
 
+/*
 func (s Show) GetReferencedStructs() []jsonapi.MarshalIdentifier {
 
 	var results []jsonapi.MarshalIdentifier
 	var seasons []Season
-	var episodes []Episode
+	//var episodes []Episode
 
 	err := db.Find(&seasons).Where("show_id = ?", s.ID).Error
 	if err != nil {
 		log.Print("ERROR: get referenced seasons for Show failed")
 	}
 
-	err = db.Find(&episodes).Where("show_id = ?", s.ID).Error
-	if err != nil {
-		log.Print("ERROR: get referenced episodes for Show failed")
-	}
+	//err = db.Find(&episodes).Where("show_id = ?", s.ID).Error
+	//if err != nil {
+	//	log.Print("ERROR: get referenced episodes for Show failed")
+	//}
 
 	for _, season := range seasons {
 		results = append(results, season)
 	}
 
-	for _, episode := range episodes {
-		results = append(results, episode)
-	}
+	//for _, episode := range episodes {
+	//	results = append(results, episode)
+	//}
 
 	return results
 
